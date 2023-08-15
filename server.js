@@ -4,6 +4,8 @@ const dotenv = require('dotenv');
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const db = require('./models/index');
+const handlebars = require("handlebars");
+const mysql = require('mysql2');
 
 
 dotenv.config();
@@ -18,11 +20,15 @@ app.use(
     store: new SequelizeStore({ db: db.sequelize }),
   })
 );
-
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  database: 'test'
+});
 // View engine setup using Handlebars
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'hbs');
-
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
 // Middleware setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
