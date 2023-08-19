@@ -13,7 +13,10 @@ db.sequelize = sequelize;
 
 // Import and initialize models 
 db.User = require('./user')(sequelize, Sequelize);
-
+db.Blog = require('./blog-post')(sequelize, Sequelize);
+db.Comment = require('./comment')(sequelize, Sequelize);
 //associations between models 
-
+User.hasMany(Blog);
+Blog.hasMany(Comment);
+Comment.belongsTo(User);
 module.exports = db;
