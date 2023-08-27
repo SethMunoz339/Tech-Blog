@@ -19,6 +19,10 @@ router.post('/api/blog', async (req, res) => {
   const blog = await Blog.create(req.body);
   return res.json(blog);
 });
+router.get('/api/blog', async (req, res) => {
+  const blog = await Blog.findAll();
+  return res.json(blog);
+});
 router.get('/api/blog/:id', async (req, res) => {
   const blog = await Blog.findOne({ where: { id: req.params.id } });
   return res.json(blog);
