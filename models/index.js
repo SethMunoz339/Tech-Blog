@@ -1,22 +1,13 @@
-const Sequelize = require('sequelize');
-const { DB_HOST, DB_USER, DB_PASS, DB_NAME } = process.env;
+const User = require('./User');
+const Project = require('./Project');
 
-const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASS, {
-  host: DB_HOST,
-  dialect: 'mysql',
+User.hasMany(Project, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE'
 });
 
-const db = {};
+Project.belongsTo(User, {
+  foreignKey: 'user_id'
+});
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
-
-// Import and initialize models 
-db.User = require('./user')(sequelize, Sequelize);
-db.Blog = require('./blog-post')(sequelize, Sequelize);
-db.Comment = require('./comment')(sequelize, Sequelize);
-//associations between models 
-User.hasMany(Blog);
-Blog.hasMany(Comment);
-Comment.belongsTo(User);
-module.exports = db;
+module.exports = { User, Project };
