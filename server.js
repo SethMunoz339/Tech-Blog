@@ -1,49 +1,46 @@
-const express = require("express");
 const path = require("path");
-const dotenv = require("dotenv");
+const express = require("express");
 const session = require("express-session");
+const exphbs = require("express-handlebars");
+const routes = require("./controllers");
+const helpers = require("./utils/helpers");
+
+const sequelize = require("./config/connection");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
-const db = require("./models");
-const handlebars = require("handlebars");
-const mysql = require("mysql2");
 
-dotenv.config();
 const app = express();
+const PORT = process.env.PORT || 3001;
 
-// Session setup
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    store: new SequelizeStore({ db: db.sequelize }),
-  })
-);
-const connection = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  database: "test",
-});
-// View engine setup using Handlebars
-app.set("views", path.join(__dirname, "views"));
+// Set up Handlebars.js engine with custom helpers
+const hbs = exphbs.create({ helpers });
+
+const sess = {
+  secret: "Super secret secret",
+  cookie: {
+    maxAge: 300000,
+    httpOnly: true,
+    secure: false,
+    sameSite: "strict",
+  },
+  resave: false,
+  saveUninitialized: true,
+  store: new SequelizeStore({
+    db: sequelize,
+  }),
+};
+
+app.use(session(sess));
+
+// Inform Express.js on which template engine to use
 app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
-// Middleware setup
+
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Routes
-const routes = require("./controllers");
-// const authRouter = require('./controllers/auth');
-// Add other controllers as needed
+app.use(routes);
 
-app.use("/", routes);
-// app.use('/auth', authRouter);
-// Add other routes as needed
-
-// Start the server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+sequelize.sync({ force: false }).then(() => {
+  app.listen(PORT, () => console.log("Now listening"));
 });
