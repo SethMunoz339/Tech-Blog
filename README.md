@@ -8,6 +8,14 @@
 
 This application allows a user to sign up, log in, create, edit, and delete blog posts, and create and delete comments.
 
+## URL 
+
+[Link to Website] (https://techblogsierra-0e66af2c8c9b.herokuapp.com/)
+
+## Screenshot 
+
+![Tech Blog](https://github.com/SethMunoz339/tech-blog/blob/main/tech-blog-screenshot.png?raw=true)
+
 ## Table of Contents
 
 - [Installation](#installation)
