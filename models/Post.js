@@ -35,9 +35,9 @@ Post.init(
     sequelize,
     timestamps: false,
     freezeTableName: true,
-    underscored: true,
+    underscored: true,S\
     modelName: "Post",
   }
 );
 
-module.exports = Comment;
+module.exports = Post;
